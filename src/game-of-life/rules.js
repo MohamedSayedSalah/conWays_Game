@@ -25,7 +25,7 @@ import { head } from 'ramda';
 export const survivalRule = (x, y, matrix, [isAlive, color = BLUE]) => {
     const neighbours = countNeighbours(matrix, x, y);
     const cell = matrix[x][y];
-    return [isCellAlive(cell) && neighbours === 2, color];
+    return [isCellAlive(cell) ?  (neighbours === 2 || neighbours === 3) : neighbours ===3   , color];
 };
 
 // ################################################################
