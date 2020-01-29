@@ -2,9 +2,9 @@ import {
     getNeighbourColors,
     isCellAlive,
     countNeighbours,
-    BLUE,
+    BLUE, ORANGE, RED,
 } from '../utils/helper';
-import { head } from 'ramda';
+import { has, head } from 'ramda';
 
 /**
  * This is the heart and main rule that was built after the origin rule of `Conways´s Game of Life`
@@ -39,7 +39,17 @@ export const survivalRule = (x, y, matrix, [isAlive, color = BLUE]) => {
  * Returns the most frequent color for its input params `neighbourColors`.
  * @param {array} neighbourColors
  */
-export const getMostFrequentColor = neighbourColors => BLUE;
+export const getMostFrequentColor = neighbourColors => {
+    let hash={};
+    hash[BLUE] = 0 ;
+    hash[ORANGE] = 0 ;
+    hash[RED] =  0 ;
+    neighbourColors.forEach((color)=>{
+       hash[color] ++ ;
+    });
+
+    return hash[BLUE] >= hash[ORANGE] ? (hash[BLUE] >= hash[RED] ? BLUE : RED ) : ( hash[ORANGE] >= hash[RED] ? ORANGE : RED ) ;
+}
 
 /**
  * This method determines the new color for a living cell by finding the most occurent color of the

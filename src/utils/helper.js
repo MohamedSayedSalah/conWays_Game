@@ -188,7 +188,7 @@ export const updateCells = (matrix, cell) => {
  * @param {array} rules
  */
 export const getNextGeneration = curry((rules, matrix) => {
-    debugger
+
     const living = {};
     drawLoop(matrix.length, head(matrix).length, (i, j) => {
         const [alive, color] = rules.reduce(
