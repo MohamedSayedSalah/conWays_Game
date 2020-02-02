@@ -1,5 +1,8 @@
 import { createComponent } from 'melody-streams';
 import template from './Counter.twig';
+import { Observable } from 'rxjs';
+import { getCurrentLiving } from '../utils/helper';
+import { forEach } from 'ramda';
 
 // ################################################################
 // ### TASK: WEB-103: Implement component "Counter" (OPTIONAL) ####
@@ -39,6 +42,46 @@ import template from './Counter.twig';
  *
  * NOTE: A Melody-Streaming-Component must return a new stream (observable) or an Object composed of streams.
  */
-export const Counter = ({ props }) => ({});
+const countLiving = (matrixOfLiving)=>{
+    let count = 0 ;
+    Object.keys(matrixOfLiving).forEach(row=>{
+        count += row.length ;
+    });
+    return count ;
+};
+
+const initialState = { generations: 0, living: 0, diedOverTime: 0 };
+
+
+export const Counter = ({ props }) => {
+    return  Observable.create((observable) => {
+        let prevLiving = 0 ;
+        let state = initialState ;
+        let generationsCounter = 0 ;
+        let diedOverTime = 0 ;
+        let currentLiving = 0 ;
+        let prevReset = true ;
+
+        props.subscribe((x) => {
+            currentLiving = countLiving(getCurrentLiving(x.matrix));
+            if (x.resets === prevReset) {
+                generationsCounter = 0 ;
+                currentLiving = 0 ;
+                diedOverTime = 0 ;
+                prevLiving = 0 ;
+                prevReset = !x.resets;
+                state = {...initialState};
+            }
+
+            state['generations'] = generationsCounter ;
+            state['living'] = currentLiving ;
+            state['diedOverTime'] = diedOverTime ;
+            observable.next(state);
+            diedOverTime += prevLiving > currentLiving ? prevLiving - currentLiving : 0;
+            prevLiving = currentLiving ;
+            generationsCounter +=1 ;
+        });
+    });
+};
 
 export default createComponent(Counter, template);

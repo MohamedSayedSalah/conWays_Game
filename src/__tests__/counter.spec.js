@@ -20,7 +20,7 @@ const testProperty = (...properties) => async iterations => {
             })),
         ),
     };
-    const c = Counter(data);
+    const c = Counter(data);c
     return Promise.all(p.map(o => c[o].toPromise()));
 };
 
